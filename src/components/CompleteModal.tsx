@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import confetti from "canvas-confetti";
+import { IDataSave } from "../hooks/useMemoryGame";
+import { formatTime } from "../utils/utils";
 
 interface CompleteModalProps {
   open?: boolean;
@@ -9,6 +11,7 @@ interface CompleteModalProps {
     minutes: number;
     seconds: number;
   };
+  level: number;
 }
 
 const CompleteModal: React.FC<CompleteModalProps> = ({
@@ -16,7 +19,16 @@ const CompleteModal: React.FC<CompleteModalProps> = ({
   showNext,
   onClickNext,
   time,
+  level,
 }) => {
+  const existingSave = JSON.parse(
+    localStorage.getItem("score-memory-game") ?? "[]"
+  ) as IDataSave[];
+
+  const currentLevelScore = existingSave.find(
+    (data) => data.level === level
+  )?.score;
+
   useEffect(() => {
     if (open === true) {
       confetti();
@@ -43,6 +55,16 @@ const CompleteModal: React.FC<CompleteModalProps> = ({
             {("0" + time?.seconds).slice(-2)}
           </span>
         </p>
+        {currentLevelScore && (
+          <p>
+            Score tertinggi :{" "}
+            {formatTime({
+              minutes: currentLevelScore?.minutes,
+              seconds: currentLevelScore?.seconds,
+            })}
+          </p>
+        )}
+
         {showNext ? (
           <button
             className="px-5 py-2 text-slate-100 bg-indigo-800 font-semibold"
