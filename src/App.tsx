@@ -1,27 +1,46 @@
-import { useState } from "react";
-import Card from "./Card";
-// import IconVite from "./assets/vite.svg";
-import * as Image from "./assets";
+import { useCallback, useMemo, useRef, useState } from "react";
+import Card from "./components/Card";
+import { CardCollections } from "./utils/utils";
 
 function App() {
-  const myName = "arsadi";
-  const [update, setUpdate] = useState(1);
+  const myName = useMemo(() => "Arsadi", []);
+  const calculateNumber = useCallback(() => {
+    console.log("calculate number!!!");
+  }, []);
+
+  const updateCount = useRef<number>(0);
+  const [update, setUpdate] = useState<number>(0);
+  console.log({ updateCount });
 
   return (
     <div className="">
-      <h1 className="text-6xl">Hello {myName}</h1>
-      <Card
-        metadata={{
-          title: <h2 className="text-5xl font-bold">Card Pertama</h2>,
-          description: "Card pertama ini sangat awesome",
-          amount: 10 + update
+      <h1
+        onClick={() => {
+          alert("update count " + updateCount.current);
+        }}
+        className="text-6xl"
+      >
+        Hello {myName}
+      </h1>
+      {CardCollections.map((card) => {
+        return <Card image={card.image} />;
+      })}
+      <button
+        onClick={() => {
+          // setUpdate(update + 1);
+          // const newUpdate = update + 1;
+
+          updateCount.current += 1;
+          setUpdate(update + 1);
+          calculateNumber();
+
+          // setUpdate(newUpdate);
+          // setNumberOfClick(newUpdate + 1);
+          // console.log('click ', {newUpdate});
         }}
       >
-        <img src={Image.DCBiru} alt="" />
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quibusdam,
-        laudantium.
-      </Card>
-      <button onClick={() => setUpdate(update + 1)}>Click</button>
+        Click
+      </button>
     </div>
   );
 }
